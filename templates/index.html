@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="container">
+	<h1 class="top-head">Munro</h1>
+	<div class="row form-row">
+		<form method="POST" class="form-inline" action="/">
+			<input type="text" placeholder="Enter Name of Stock" class="form-control" name="name">
+			<button type="submit" class="btn btn-default">Submit</button>		
+		</form>
+	</div>
+	<br>
+
+	<table class="table table-bordered">
+		<thead class="tb-text">
+			<th class="tb-text">ID</th>
+			<th class="tb-text">CODE</th>
+			<th class="tb-text">NAME</th>
+			<th class="tb-text">OPEN</th>
+			<th class="tb-text">HIGH</th>
+			<th class="tb-text">LOW</th>
+			<th class="tb-text">CLOSE</th>
+		</thead>
+		<tbody class="tb-text">
+			{% for value in range(seq) %}			
+			<tr>
+				<td>{{ redis_data["ID"][value] }}</td>
+				<td>{{ redis_data["CODE"][value] }}</td>
+				<td>{{ redis_data["NAME"][value] }}</td>
+				<td>{{ redis_data["OPEN"][value] }}</td>
+				<td>{{ redis_data["HIGH"][value] }}</td>
+				<td>{{ redis_data["LOW"][value] }}</td>
+				<td>{{ redis_data["CLOSE"][value] }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}
