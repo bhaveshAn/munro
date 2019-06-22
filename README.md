@@ -35,7 +35,7 @@ pip install -r requirements.txt
 
 ### Running the script and web app
 
-* Running the script for current date
+* Running the script for data of 2 days back
 ```sh
 python stocks.py
 ```

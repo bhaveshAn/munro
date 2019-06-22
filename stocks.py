@@ -54,26 +54,14 @@ class RedisStore(object):
         date = datetime.date.today() - datetime.timedelta(days=2) if not date else date
         fdate = convert_date_to_bseurl_fmt(date)
         bse_zip_url = get_bse_zip_url_for_fdate(fdate)
-        print(bse_zip_url)
         csv_file_url = read_zip_file(bse_zip_url, fdate)
-        print(csv_file_url)
         data = read_csv_data(csv_file_url)
         self.store_data(data)
 
-    def get_redis_data(self, date=None):
-        """
-        This function returns redis stored data as dictionary
-        """
-        self.get_redis(date)
-        self.redis_data = {}
-        for key in self.redis_ref.keys():
-            self.redis_data[key] = self.redis_ref.lrange(key, 0, -1)
-
-    def get_top_redis_data(self, date=None):
+    def get_top_redis_data(self):
         """
         This function returns redis stored data as dictionary having 10 records
         """
-        self.get_redis_data(date)
         filtered_data = {}
         for key in self.redis_ref.keys():
             filtered_data[key] = self.redis_ref.lrange(key, 0, 10)
@@ -86,7 +74,7 @@ class RedisStore(object):
         ids = []
         c = 0
         p = 0
-        for each in self.redis_data["NAME"]:
+        for each in self.redis_ref.lrange("NAME", 0, -1):
             if each == name:
                 ids.append(c)
             c += 1
@@ -111,7 +99,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         date = sys.argv[1]
         redis_store = RedisStore()
-        redis_store.get_redis_data(date)
+        redis_store.get_redis(date)
     else:
         redis_store = RedisStore()
-        redis_store.get_redis_data()
+        redis_store.get_redis()

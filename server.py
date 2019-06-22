@@ -12,17 +12,13 @@ class Server:
         self.redis_store = RedisStore()
 
     @cherrypy.expose
-    def index(self, date=None, name=None):
+    def index(self, name=None):
         if cherrypy.request.method == "POST":
             redis_data = self.redis_store.search_stock_by_name(name)
             seq = len(redis_data["ID"])
         else:
-            if date:
-                redis_data = self.redis_store.get_top_redis_data(date)
-                seq = len(redis_data["ID"])
-            else:
-                redis_data = self.redis_store.get_top_redis_data()
-                seq = len(redis_data["ID"])
+            redis_data = self.redis_store.get_top_redis_data()
+            seq = len(redis_data["ID"])
         return env.get_template("index.html").render(
             redis_data=redis_data, seq=seq)
 
