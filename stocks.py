@@ -1,4 +1,5 @@
 import sys
+import os
 import datetime
 import redis
 
@@ -8,14 +9,26 @@ from utils import (
     read_zip_file,
     read_csv_data,
 )
+from config import REDIS_PORT, REDIS_HOST, APP_CONFIG
 
 
 class RedisStore(object):
     def __init__(self):
-        self.redis_ref = redis.Redis(
-            host="localhost", port=6379, db=1, charset="utf-8",
-            decode_responses=True
-        )
+        if APP_CONFIG == "development":
+            self.redis_ref = redis.StrictRedis(
+                host=REDIS_HOST,
+                port=REDIS_PORT,
+                db=1,
+                charset="utf-8",
+                decode_responses=True,
+            )
+        else:
+            self.redis_ref = redis.from_url(
+                os.environ.get("REDIS_URL"),
+                db=1,
+                charset="utf-8",
+                decode_responses=True,
+            )
         self.redis_data = None
 
     def store_data(self, data):
@@ -38,10 +51,12 @@ class RedisStore(object):
         after reading and storing the csv data
         """
 
-        date = datetime.datetime.today().date() if not date else date
+        date = datetime.date.today() - datetime.timedelta(days=2) if not date else date
         fdate = convert_date_to_bseurl_fmt(date)
         bse_zip_url = get_bse_zip_url_for_fdate(fdate)
+        print(bse_zip_url)
         csv_file_url = read_zip_file(bse_zip_url, fdate)
+        print(csv_file_url)
         data = read_csv_data(csv_file_url)
         self.store_data(data)
 
@@ -49,16 +64,16 @@ class RedisStore(object):
         """
         This function returns redis stored data as dictionary
         """
-        self.get_redis()
+        self.get_redis(date)
         self.redis_data = {}
         for key in self.redis_ref.keys():
             self.redis_data[key] = self.redis_ref.lrange(key, 0, -1)
 
-    def get_top_redis_data(self):
+    def get_top_redis_data(self, date=None):
         """
         This function returns redis stored data as dictionary having 10 records
         """
-        self.get_redis_data()
+        self.get_redis_data(date)
         filtered_data = {}
         for key in self.redis_ref.keys():
             filtered_data[key] = self.redis_ref.lrange(key, 0, 10)
@@ -93,10 +108,10 @@ class RedisStore(object):
 
 if __name__ == "__main__":
 
-    try:
+    if len(sys.argv) > 1:
         date = sys.argv[1]
         redis_store = RedisStore()
         redis_store.get_redis_data(date)
-    except IndexError:
+    else:
         redis_store = RedisStore()
         redis_store.get_redis_data()

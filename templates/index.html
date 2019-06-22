@@ -13,7 +13,6 @@
 
 	<table class="table table-bordered">
 		<thead class="tb-text">
-			<th class="tb-text">ID</th>
 			<th class="tb-text">CODE</th>
 			<th class="tb-text">NAME</th>
 			<th class="tb-text">OPEN</th>
@@ -24,7 +23,6 @@
 		<tbody class="tb-text">
 			{% for value in range(seq) %}			
 			<tr>
-				<td>{{ redis_data["ID"][value] }}</td>
 				<td>{{ redis_data["CODE"][value] }}</td>
 				<td>{{ redis_data["NAME"][value] }}</td>
 				<td>{{ redis_data["OPEN"][value] }}</td>
