@@ -47,7 +47,7 @@ class RedisStore(object):
 
     def get_redis(self, date=None):
         """
-        This function returns the redis instance
+        This function stores the data into redis instance
         after reading and storing the csv data
         """
 
