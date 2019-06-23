@@ -35,6 +35,12 @@ pip install -r requirements.txt
 
 ### Running the script and web app
 
+* Set `APP_CONFIG` enviroment variable (defaults to `production`)
+
+```sh
+export APP_CONFIG="development"
+```
+
 * Running the script for data of 2 days back
 ```sh
 python stocks.py

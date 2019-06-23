@@ -3,6 +3,7 @@ import urllib.request
 import urllib
 import os
 from zipfile import ZipFile
+from datetime import datetime
 
 from config import CSV_DIR, ZIP_DIR
 
@@ -26,14 +27,19 @@ def get_bse_zip_url_for_fdate(fdate):
     return "http://www.bseindia.com/download/BhavCopy/Equity/EQ" + fdate + "_CSV.ZIP"
 
 
-def read_zip_file(file_url, fdate):
+def read_zip_file(file_url, fdate, date):
     """
     This function reads the zip url and stores zip file in ZIP_DIR and extracts
     the zip file in CSV_DIR
     """
 
     filename = os.path.join(ZIP_DIR, "EQ" + str(fdate) + ".zip")
-    f = urllib.request.urlretrieve(file_url, filename)
+    try:
+        f = urllib.request.urlretrieve(file_url, filename)
+    except urllib.error.HTTPError:
+        raise Exception("No data exists for Date : {}".format(
+            str(datetime.strftime(date, "%d-%m-%Y"))
+        ))
     file = ZipFile(filename, "r")
     file.extractall(CSV_DIR)
     file.close()

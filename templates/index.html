@@ -2,7 +2,10 @@
 {% block body %}
 
 <div class="container">
-	<h1 class="top-head">Munro</h1>
+	<h1 class="top-head">Munro</h1><br>
+	{% if msg %}
+	<h2>{{ msg }}</h2>
+	{% endif %}
 	<div class="row form-row">
 		<form method="POST" class="form-inline" action="/">
 			<input type="text" placeholder="Enter Name of Stock" class="form-control" name="name">

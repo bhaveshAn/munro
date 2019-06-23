@@ -58,7 +58,7 @@ class RedisStore(object):
             date = datetime.date.today() - datetime.timedelta(days=2)
         fdate = convert_date_to_bseurl_fmt(date)
         bse_zip_url = get_bse_zip_url_for_fdate(fdate)
-        csv_file_url = read_zip_file(bse_zip_url, fdate)
+        csv_file_url = read_zip_file(bse_zip_url, fdate, date)
         data = read_csv_data(csv_file_url)
         self.store_data(data, date)
 

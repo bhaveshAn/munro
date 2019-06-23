@@ -13,14 +13,18 @@ class Server:
 
     @cherrypy.expose
     def index(self, name=None):
-        if cherrypy.request.method == "POST":
-            redis_data = self.redis_store.search_stock_by_name(name)
-            seq = len(redis_data["ID"])
+        msg = ""
+        if cherrypy.request.method == "POST" and name:
+            try:
+                redis_data = self.redis_store.search_stock_by_name(name)
+            except IndexError:
+                msg = "No data with Stock name : {0}".format(name)
+                redis_data = self.redis_store.get_top_redis_data()
         else:
             redis_data = self.redis_store.get_top_redis_data()
-            seq = len(redis_data["ID"])
+        seq = len(redis_data["ID"])
         return env.get_template("index.html").render(
-            redis_data=redis_data, seq=seq)
+            redis_data=redis_data, seq=seq, msg=msg)
 
 
 if __name__ == "__main__":
