@@ -43,7 +43,7 @@ python stocks.py
 * Running the script for specific date e.g. 2019-01-01
 
 ```sh
-python stocks.py 2019-01-01
+python stocks.py 20-06-2019
 ```
 
 * Running the CherryPy Web App

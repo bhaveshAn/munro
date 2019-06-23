@@ -31,12 +31,14 @@ class RedisStore(object):
             )
         self.redis_data = None
 
-    def store_data(self, data):
+    def store_data(self, data, date):
         """
         This function stores the data into Redis Server
         """
+        datef = date.strftime('%d-%m-%Y')
         for i, each in data.iterrows():
             self.redis_ref.rpush("ID", i)
+            self.redis_ref.rpush("DATE", datef)
             self.redis_ref.rpush("CODE", each["SC_CODE"])
             self.redis_ref.rpush("NAME", each["SC_NAME"].strip())
             self.redis_ref.rpush("OPEN", each["OPEN"])
@@ -50,13 +52,15 @@ class RedisStore(object):
         This function stores the data into redis instance
         after reading and storing the csv data
         """
-
-        date = datetime.date.today() - datetime.timedelta(days=2) if not date else date
+        if date:
+            date = datetime.datetime.strptime(date, '%d-%m-%Y').date()
+        else:
+            date = datetime.date.today() - datetime.timedelta(days=2)
         fdate = convert_date_to_bseurl_fmt(date)
         bse_zip_url = get_bse_zip_url_for_fdate(fdate)
         csv_file_url = read_zip_file(bse_zip_url, fdate)
         data = read_csv_data(csv_file_url)
-        self.store_data(data)
+        self.store_data(data, date)
 
     def get_top_redis_data(self):
         """
@@ -64,7 +68,7 @@ class RedisStore(object):
         """
         filtered_data = {}
         for key in self.redis_ref.keys():
-            filtered_data[key] = self.redis_ref.lrange(key, 0, 10)
+            filtered_data[key] = self.redis_ref.lrange(key, -10, -1)
         return filtered_data
 
     def search_stock_by_name(self, name):
