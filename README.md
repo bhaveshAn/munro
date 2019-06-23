@@ -40,7 +40,7 @@ pip install -r requirements.txt
 python stocks.py
 ```
 
-* Running the script for specific date e.g. 2019-01-01
+* Running the script for specific date e.g. 20-06-2019
 
 ```sh
 python stocks.py 20-06-2019
