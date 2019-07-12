@@ -16,7 +16,7 @@ class Server:
         msg = ""
         if cherrypy.request.method == "POST" and name:
             try:
-                redis_data = self.redis_store.search_stock_by_name(name)
+                redis_data = self.redis_store.search_stock_by_name(name.upper())
             except IndexError:
                 msg = "No data with Stock name : {0}".format(name)
                 redis_data = self.redis_store.get_top_redis_data()
